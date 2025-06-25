@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, My Love!</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Dancing Script for headings, Lato for body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Canvas-Confetti for a celebration effect -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* Define custom fonts from Google Fonts */
+        body {
+            font-family: 'Lato', sans-serif;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+        h1, h2, h3, .font-script {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Animated Gradient Background */
+        body.bg-gradient-custom {
+            background: linear-gradient(270deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb, #84fab0, #ff9a9e);
+            background-size: 600% 600%;
+            animation: animateGradient 20s ease infinite;
+        }
+
+        @keyframes animateGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Glassmorphism effect for cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        /* Animation for elements fading in on scroll */
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .scroll-animate.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Styling for the interactive cake */
+        .candle {
+            width: 12px;
+            height: 50px;
+            background: #fff;
+            border-radius: 5px 5px 0 0;
+            position: absolute;
+            bottom: 60px; /* Position candles on top of the cake */
+            transform-origin: bottom;
+            box-shadow: 0px 0px 5px rgba(0,0,0,0.2);
+        }
+        .flame {
+            width: 14px;
+            height: 20px;
+            background: orange;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: absolute;
+            top: -20px;
+            left: -1px;
+            animation: flicker 1.5s ease-in-out infinite;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+        @keyframes flicker {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(1.1) scaleX(1.05); }
+        }
+        .cake {
+            width: 150px;
+            height: 70px;
+            background: #d18a93;
+            position: relative;
+            border-radius: 10px;
+        }
+        .icing {
+            width: 100%;
+            height: 20px;
+            background: #f7c5cc;
+            position: absolute;
+            top: -10px;
+            border-radius: 50% / 100%;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        
+        /* Heartbeat animation for icons */
+        @keyframes heartbeat {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.15); }
+          100% { transform: scale(1); }
+        }
+        .heartbeat {
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+        
+        /* AI-powered button styling */
+        .gemini-button {
+            background: linear-gradient(45deg, #f87171, #fb923c);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px 0 rgba(252, 106, 110, 0.75);
+        }
+        .gemini-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 rgba(252, 106, 110, 0.9);
+        }
+
+        /* Spinner for loading state */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #f87171;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Flying Objects Container */
+        .flying-objects-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .flying-object {
+            position: absolute;
+            display: block;
+            opacity: 0.7;
+        }
+
+        /* Butterflies */
+        .butterfly {
+            width: 50px;
+            height: 50px;
+            animation: fly-butterfly 20s linear infinite;
+        }
+        @keyframes fly-butterfly {
+            0% { transform: translateX(-10vw) translateY(80vh) rotate(20deg); }
+            25% { transform: translateX(30vw) translateY(40vh) rotate(-30deg) scale(1.1); }
+            50% { transform: translateX(60vw) translateY(10vh) rotate(10deg); }
+            75% { transform: translateX(90vw) translateY(50vh) rotate(40deg) scale(0.9); }
+            100% { transform: translateX(110vw) translateY(20vh) rotate(-10deg); }
+        }
+
+        /* Balloons */
+        .balloon {
+            width: 70px;
+            height: 90px;
+            background-color: rgba(244, 67, 54, 0.7);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: fly-balloon 25s linear infinite;
+        }
+        .balloon::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 10px solid rgba(244, 67, 54, 0.7);
+        }
+        @keyframes fly-balloon {
+            0% { bottom: -100px; transform: translateX(0) rotate(0deg); }
+            50% { transform: translateX(100px) rotate(-10deg); }
+            100% { bottom: 110vh; transform: translateX(-50px) rotate(10deg); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-custom text-gray-800">
+
+    <!-- Flying Objects -->
+    <div class="flying-objects-container">
+        <!-- Butterfly 1 -->
+        <div class="flying-object butterfly" style="top: 20%; left: -5%; animation-delay: 0s;">
+            <svg viewBox="0 0 512 512" fill="#ffc0cb"><path d="M256,118.1C256,118.1,256,118.1,256,118.1c-22.1,0-40,17.9-40,40v195.8c0,22.1,17.9,40,40,40c22.1,0,40-17.9,40-40V158.1C296,136,278.1,118.1,256,118.1z"/><path d="M128.4,158.1c-30.8,6.8-54.6,33.5-54.6,65.8v114.1c0,36.4,29.6,66,66,66h11.7c-8-17.7-12.5-37.3-12.5-58.1V158.1z M383.6,158.1v187.8c0,20.8-4.5,40.4-12.5,58.1h11.7c36.4,0,66-29.6,66-66V223.9c0-32.3-23.8-59-54.6-65.8C390,157.3,386.8,157.7,383.6,158.1z"/><path d="M128.4,158.1c-30.8,6.8-54.6,33.5-54.6,65.8v114.1c0,36.4,29.6,66,66,66h11.7c-8-17.7-12.5-37.3-12.5-58.1V158.1z M383.6,158.1v187.8c0,20.8-4.5,40.4-12.5,58.1h11.7c36.4,0,66-29.6,66-66V223.9c0-32.3-23.8-59-54.6-65.8C390,157.3,386.8,157.7,383.6,158.1z"/></svg>
+        </div>
+        <!-- Butterfly 2 -->
+        <div class="flying-object butterfly" style="top: 50%; left: -5%; animation-delay: 5s; transform: scale(0.8);">
+            <svg viewBox="0 0 512 512" fill="#fbc2eb"><path d="M256,118.1C256,118.1,256,118.1,256,118.1c-22.1,0-40,17.9-40,40v195.8c0,22.1,17.9,40,40,40c22.1,0,40-17.9,40-40V158.1C296,136,278.1,118.1,256,118.1z"/><path d="M128.4,158.1c-30.8,6.8-54.6,33.5-54.6,65.8v114.1c0,36.4,29.6,66,66,66h11.7c-8-17.7-12.5-37.3-12.5-58.1V158.1z M383.6,158.1v187.8c0,20.8-4.5,40.4-12.5,58.1h11.7c36.4,0,66-29.6,66-66V223.9c0-32.3-23.8-59-54.6-65.8C390,157.3,386.8,157.7,383.6,158.1z"/><path d="M128.4,158.1c-30.8,6.8-54.6,33.5-54.6,65.8v114.1c0,36.4,29.6,66,66,66h11.7c-8-17.7-12.5-37.3-12.5-58.1V158.1z M383.6,158.1v187.8c0,20.8-4.5,40.4-12.5,58.1h11.7c36.4,0,66-29.6,66-66V223.9c0-32.3-23.8-59-54.6-65.8C390,157.3,386.8,157.7,383.6,158.1z"/></svg>
+        </div>
+        <!-- Balloon 1 -->
+        <div class="flying-object balloon" style="left: 10%; animation-delay: 0s;"></div>
+        <!-- Balloon 2 -->
+        <div class="flying-object balloon" style="left: 35%; animation-delay: 8s; background-color: rgba(139, 195, 74, 0.7);"></div>
+        <!-- Balloon 3 -->
+        <div class="flying-object balloon" style="left: 70%; animation-delay: 15s; background-color: rgba(33, 150, 243, 0.7);"></div>
+    </div>
+
+
+    <!-- Audio Player -->
+    <audio id="birthday-song" loop>
+        <source src="HAPPY Birthday Song, Happy Birthday to You.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="container mx-auto px-4 py-8 relative z-10">
+
+        <!-- Music Toggle Button -->
+        <button id="music-toggle" class="fixed top-4 right-4 z-50 bg-white/50 p-3 rounded-full shadow-lg text-pink-500 hover:bg-white transition-all duration-300">
+            <svg id="music-on-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            <svg id="music-off-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><path d="M9 18V5l12-2v13M19.5 19.5 4.5 4.5"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        </button>
+
+        <!-- Hero Section -->
+        <header class="text-center py-20 min-h-screen flex flex-col justify-center items-center">
+            <h1 class="text-6xl md:text-8xl text-white font-bold drop-shadow-lg animate-fade-in-down">Happy Birthday,</h1>
+            <h2 class="text-5xl md:text-7xl text-pink-700 mt-4 drop-shadow-lg animate-fade-in-up">Ruhi Christin</h2>
+            <p class="mt-8 text-lg text-white max-w-2xl mx-auto animate-fade-in">Today is all about celebrating you and the incredible person you are. You fill my life with so much joy and love. This is for you!</p>
+            <div class="mt-12 animate-bounce">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+        </header>
+
+        <!-- Our Story Timeline Section -->
+        <section class="py-20 scroll-animate">
+            <h2 class="text-5xl text-center text-white mb-12">Our Beautiful Journey</h2>
+            <div class="relative wrap overflow-hidden p-10 h-full">
+                <!-- Hides the vertical line on mobile for a cleaner look -->
+                <div class="border-2-2 absolute border-opacity-20 border-white h-full border hidden md:block" style="left: 50%"></div>
+
+                <!-- Timeline Item 1 (Right on desktop, stacked on mobile) -->
+                <div class="mb-8 flex flex-col md:flex-row md:justify-between items-center w-full">
+                    <div class="order-1 hidden md:block md:w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-pink-500 shadow-xl w-12 h-12 rounded-full heartbeat mb-4 md:mb-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" class="mx-auto"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                    <div class="order-1 glass-card w-full md:w-5/12 px-6 py-4">
+                        <h3 class="mb-3 font-bold text-gray-800 text-xl">The Day We Met</h3>
+                        <p class="text-sm leading-snug tracking-wide text-gray-900 text-opacity-100">Remember this day? Everything changed for the better. This was the start of our forever.</p>
+                        <img src="image2.jpg" alt="Memory 1" class="mt-4 rounded-lg shadow-md" onerror="this.onerror=null;this.src='C:\Users\sahil\visual code zone\AKSHAY REPLIT\ASSEST\WhatsApp Image 2025-06-25 at 23.18.56_0108c57d.jpg';">
+                    </div>
+                </div>
+
+                <!-- Timeline Item 2 (Left on desktop, stacked on mobile) -->
+                <div class="mb-8 flex flex-col md:flex-row-reverse md:justify-between items-center w-full">
+                    <div class="order-1 hidden md:block md:w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-pink-500 shadow-xl w-12 h-12 rounded-full heartbeat mb-4 md:mb-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" class="mx-auto"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                    <div class="order-1 glass-card w-full md:w-5/12 px-6 py-4">
+                        <h3 class="mb-3 font-bold text-gray-800 text-xl">Remember</h3>
+                        <p class="text-sm leading-snug tracking-wide text-gray-900 text-opacity-100">A very nice day. Can't wait for our next one!</p>
+                        <img src="image1.jpg" alt="Memory 2" class="mt-4 rounded-lg shadow-md" onerror="this.onerror=null;this.src='AKSHAY REPLIT\ASSEST\image1.jpg';">
+                    </div>
+                </div>
+
+                 <!-- Timeline Item 3 (Right on desktop, stacked on mobile) -->
+                <div class="mb-8 flex flex-col md:flex-row md:justify-between items-center w-full">
+                    <div class="order-1 hidden md:block md:w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-pink-500 shadow-xl w-12 h-12 rounded-full heartbeat mb-4 md:mb-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" class="mx-auto"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                    <div class="order-1 glass-card w-full md:w-5/12 px-6 py-4">
+                        <h3 class="mb-3 font-bold text-gray-800 text-xl">Just Because</h3>
+                        <p class="text-sm leading-snug tracking-wide text-gray-900 text-opacity-100">Every moment with you feels special, even the quiet, ordinary ones. They are my favorite.</p>
+                        <img src="img3.jpg" alt="Memory 3" class="mt-4 rounded-lg shadow-md" onerror="this.onerror=null;this.src='https://placehold.co/400x300/a3e635/ffffff?text=Image+Not+Found';">
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Special Message & Poem Section -->
+        <section class="py-20 scroll-animate">
+            <h2 class="text-5xl text-center text-white mb-12">A Note For You</h2>
+            <div class="max-w-4xl mx-auto glass-card p-8 md:p-12">
+                <h3 class="font-script text-4xl text-pink-800">To my dearest Ruhi ,</h3>
+                <p class="mt-6 text-lg text-gray-800">Happy Birthday to the one who makes my world brighter and my heart fuller...</p>
+                <p class="mt-4 text-lg text-gray-800">I hope today is as wonderful as you are...</p>
+                <p class="mt-8 text-right font-script text-3xl text-pink-800">Forever and always,<br>mota admi</p>
+                
+                <!-- AI Poem Generator -->
+                <div class="mt-10 text-center">
+                    <button id="generate-poem-btn" class="gemini-button text-white font-bold py-3 px-6 rounded-full inline-flex items-center">
+                        ✨ Generate a Poem For Us
+                    </button>
+                    <div id="poem-loader" class="mt-6 hidden mx-auto loader"></div>
+                    <div id="poem-output" class="mt-6 text-left text-lg text-gray-800 italic whitespace-pre-wrap"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Cake Section -->
+        <section class="py-20 scroll-animate">
+            <h2 class="text-5xl text-center text-white mb-4">Make a Wish!</h2>
+            <p class="text-center text-white mb-12">Click on the flames to blow them out.</p>
+            <div id="cake-container" class="flex flex-col items-center justify-center relative h-64">
+                <div class="cake"><div class="icing"></div></div>
+                <div class="candle" style="left: 45%;"><div class="flame" data-candle="1"></div></div>
+                <div class="candle" style="left: 30%;"><div class="flame" data-candle="2"></div></div>
+                <div class="candle" style="left: 60%;"><div class="flame" data-candle="3"></div></div>
+                <div id="wish-message" class="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center text-3xl text-white font-bold opacity-0 transition-opacity duration-1000">
+                    <span class="font-script drop-shadow-lg">Hope all your wishes come true!</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Adventure Suggester Section -->
+        <section class="py-20 scroll-animate">
+            <h2 class="text-5xl text-center text-white mb-12">Our Next Adventure</h2>
+            <div class="max-w-4xl mx-auto text-center">
+                 <button id="generate-adventures-btn" class="gemini-button text-white font-bold py-3 px-8 rounded-full inline-flex items-center">
+                    ✨ Dream Up Our Next Trip
+                </button>
+                <div id="adventures-loader" class="mt-8 hidden mx-auto loader"></div>
+                <div id="adventures-output" class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-left"></div>
+            </div>
+        </section>
+        
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Confetti on load ---
+            const startConfetti = () => {
+                const duration = 5 * 1000;
+                const animationEnd = Date.now() + duration;
+                const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+                function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+                const interval = setInterval(function() {
+                    const timeLeft = animationEnd - Date.now();
+                    if (timeLeft <= 0) return clearInterval(interval);
+                    const particleCount = 50 * (timeLeft / duration);
+                    confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+                    confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+                }, 250);
+            };
+            startConfetti();
+
+            // --- Scroll Animations (FIXED) ---
+            const scrollElements = document.querySelectorAll('.scroll-animate');
+            const handleScrollAnimation = () => {
+                // Use a standard for loop for better compatibility
+                for (let i = 0; i < scrollElements.length; i++) {
+                    const el = scrollElements[i];
+                    // Defensive check to ensure 'el' is a valid element before calling getBoundingClientRect
+                    if (el && typeof el.getBoundingClientRect === 'function') {
+                        const elementTop = el.getBoundingClientRect().top;
+                        // Check if element is in view
+                        if (elementTop <= (window.innerHeight || document.documentElement.clientHeight) / 1.25) {
+                            el.classList.add('in-view');
+                        }
+                    }
+                }
+            };
+            window.addEventListener('scroll', handleScrollAnimation);
+            handleScrollAnimation(); // Initial check on load
+
+            // --- Music Toggle ---
+            const musicToggle = document.getElementById('music-toggle'), audio = document.getElementById('birthday-song');
+            const musicOnIcon = document.getElementById('music-on-icon'), musicOffIcon = document.getElementById('music-off-icon');
+            let isPlaying = false;
+            musicToggle.addEventListener('click', () => {
+                isPlaying = !isPlaying;
+                if (isPlaying) { audio.play(); musicOnIcon.classList.add('hidden'); musicOffIcon.classList.remove('hidden'); } 
+                else { audio.pause(); musicOnIcon.classList.remove('hidden'); musicOffIcon.classList.add('hidden'); }
+            });
+
+            // --- Interactive Cake Logic ---
+            const flames = document.querySelectorAll('.flame'), wishMessage = document.getElementById('wish-message');
+            let candlesOut = 0;
+            flames.forEach(flame => {
+                flame.addEventListener('click', () => {
+                    if (flame.style.opacity !== '0') {
+                        flame.style.opacity = '0';
+                        candlesOut++;
+                        if (candlesOut === flames.length) {
+                            wishMessage.style.opacity = '1';
+                            finalConfetti();
+                        }
+                    }
+                });
+            });
+            const finalConfetti = () => {
+                const count = 200, defaults = { origin: { y: 0.7 } };
+                function fire(particleRatio, opts) { confetti({ ...defaults, ...opts, particleCount: Math.floor(count * particleRatio) }); }
+                fire(0.25, { spread: 26, startVelocity: 55 }); fire(0.2, { spread: 60 });
+                fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 }); fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+                fire(0.1, { spread: 120, startVelocity: 45 });
+            };
+
+            // --- Gemini API Integration ---
+            const poemBtn = document.getElementById('generate-poem-btn');
+            const poemLoader = document.getElementById('poem-loader');
+            const poemOutput = document.getElementById('poem-output');
+
+            const adventuresBtn = document.getElementById('generate-adventures-btn');
+            const adventuresLoader = document.getElementById('adventures-loader');
+            const adventuresOutput = document.getElementById('adventures-output');
+
+            const apiKey = ""; // API key is handled by the environment
+
+            // Function to call Gemini API
+            async function callGemini(prompt, isJson = false) {
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                
+                let payload = {
+                    contents: [{ role: "user", parts: [{ text: prompt }] }]
+                };
+
+                if (isJson) {
+                    payload.generationConfig = {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "ARRAY",
+                            items: {
+                                type: "OBJECT",
+                                properties: {
+                                    "title": { "type": "STRING" },
+                                    "description": { "type": "STRING" }
+                                },
+                                required: ["title", "description"]
+                            }
+                        }
+                    };
+                }
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API call failed with status: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+                        return result.candidates[0].content.parts[0].text;
+                    } else {
+                        throw new Error("Invalid response structure from API.");
+                    }
+                } catch (error) {
+                    console.error("Error calling Gemini API:", error);
+                    return "Sorry, I couldn't come up with anything right now. Please try again later.";
+                }
+            }
+
+            // --- Poem Generator ---
+            poemBtn.addEventListener('click', async () => {
+                poemLoader.classList.remove('hidden');
+                poemBtn.disabled = true;
+                poemOutput.textContent = '';
+
+                const prompt = "You are a romantic poet. Write a short, heartfelt poem for a birthday. The poem should be about a deep love and cherish the memories shared. The couple's story involves meeting, going on their first trip, and enjoying simple, quiet moments together. The tone should be loving, warm, and celebratory.";
+                
+                const generatedPoem = await callGemini(prompt);
+                
+                poemOutput.textContent = generatedPoem;
+                poemLoader.classList.add('hidden');
+                poemBtn.disabled = false;
+            });
+
+            // --- Adventure Generator ---
+            adventuresBtn.addEventListener('click', async () => {
+                adventuresLoader.classList.remove('hidden');
+                adventuresBtn.disabled = true;
+                adventuresOutput.innerHTML = '';
+                
+                const prompt = "You are a creative travel planner specializing in romantic getaways. Based on a couple that loves exploring new places and cherishing memories, suggest three unique and romantic future adventure ideas for them.";
+                
+                const generatedAdventuresJson = await callGemini(prompt, true);
+                
+                try {
+                    const adventures = JSON.parse(generatedAdventuresJson);
+                    adventuresOutput.innerHTML = ''; // Clear previous results
+                    adventures.forEach(adv => {
+                        const card = document.createElement('div');
+                        card.className = 'glass-card p-6';
+                        card.innerHTML = `
+                            <h3 class="font-script text-3xl text-pink-800 mb-3">${adv.title}</h3>
+                            <p class="text-gray-800">${adv.description}</p>
+                        `;
+                        adventuresOutput.appendChild(card);
+                    });
+                } catch(e) {
+                     adventuresOutput.innerHTML = `<p class="text-white col-span-1 md:col-span-3">Sorry, I had trouble dreaming up adventures right now. Please try again!</p>`;
+                     console.error("Failed to parse JSON response for adventures", e);
+                }
+
+                adventuresLoader.classList.add('hidden');
+                adventuresBtn.disabled = false;
+            });
+        });
+    </script>
+
+</body>
+</html>
